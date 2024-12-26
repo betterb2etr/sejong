@@ -87,101 +87,139 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+
 import Chart from "chart.js/auto";
 
 export default {
   name: "AnalysisPage",
   data() {
     return {
+
       totalScore: 735,
       rcScore: 350,
       lcScore: 385,
       totalAccuracyRate: 78,
       predictedScore: 810,
+
       radarData: {
         labels: ["PART 1", "PART 2", "PART 3", "PART 4", "PART 5", "PART 6", "PART 7"],
         datasets: [
           {
             label: "토익 합격자 평균 정답률",
+
             data: [88, 83, 85, 80, 84, 81, 86],
+
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 1,
           },
           {
             label: "사용자 평균 정답률",
+
             // rank 배열(상위 퍼센트)
             userRank: [25, 20, 30, 15, 18, 28, 22],
             data: [78, 76, 80, 74, 79, 76, 81],
+
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 1,
           },
         ],
       },
+
+      chartInstance: null,
     };
   },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await axios.get('http://172.16.53.87:8080/api/score/upload'); // 백엔드 API 엔드포인트로 변경
+        const data = response.data;
+
+        // 데이터 할당
+        this.totalScore = data.totalScore;
+        this.rcScore = data.rcScore;
+        this.lcScore = data.lcScore;
+        this.totalAccuracyRate = data.totalAccuracyRate;
+        this.predictedScore = data.predictedScore;
+
+        // 레이더 차트 데이터 업데이트
+        this.radarData.datasets[0].data = data.toeicAverageAccuracy;
+        this.radarData.datasets[1].data = data.userAverageAccuracy;
+        this.radarData.datasets[1].userRank = data.userRank;
+
+        // 차트 렌더링
+        this.renderChart();
+      } catch (error) {
+        console.error("데이터 가져오기 실패:", error);
+        // 사용자에게 에러 알림 등 추가 처리
+      }
+    },
+    renderChart() {
+      const ctx = document.getElementById("radarChart").getContext("2d");
+
+      // 기존 차트가 있으면 파괴
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
+
+      this.chartInstance = new Chart(ctx, {
+        type: "radar",
+        data: this.radarData,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                font: {
+                  size: 12,
+                },
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const dataset = context.dataset;
+                  const label = context.chart.data.labels[context.dataIndex];
+                  const userAccuracy = dataset.data[context.dataIndex];
+                  const rank = dataset.userRank 
+                    ? dataset.userRank[context.dataIndex] 
+                    : null;
+
+                  if (rank !== null && rank !== undefined) {
+                    return `${label}: ${userAccuracy}% (상위 ${rank}%)`;
+                  } else {
+                    return `${label}: ${userAccuracy}%`;
+                  }
+                },
+              },
+            },
+          },
+          scales: {
+            r: {
+              angleLines: {
+                color: "#ccc",
+              },
+              grid: {
+                color: "#ddd",
+              },
+              ticks: {
+                stepSize: 10,
+                display: true,
+                color: "#000",
+              },
+            },
+          },
+        },
+      });
+    },
+
+  },
   mounted() {
-    const ctx = document.getElementById("radarChart").getContext("2d");
-
-    new Chart(ctx, {
-      type: "radar",
-      data: this.radarData,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-            labels: {
-              font: {
-                size: 12,
-              },
-            },
-          },
-          // tooltip 콜백: "PART X: 76% (상위 25%)" 등 표시
-          tooltip: {
-            callbacks: {
-              label: (context) => {
-                // 해당 데이터셋
-                const dataset = context.dataset;
-                // PART 라벨 (PART 1, PART 2, ...)
-                const label = context.chart.data.labels[context.dataIndex];
-                // 사용자 정답률 값
-                const userAccuracy = dataset.data[context.dataIndex];
-                // 상위 퍼센트
-                // 만약 rank 데이터가 없으면(합격자 평균 정답률), undefined 처리
-                const rank = dataset.userRank 
-                  ? dataset.userRank[context.dataIndex] 
-                  : null;
-
-                if (rank !== null && rank !== undefined) {
-                  // 사용자 평균 정답률
-                  return `${label}: ${userAccuracy}% (상위 ${rank}%)`;
-                } else {
-                  // 토익 합격자 평균일 경우
-                  return `${label}: ${userAccuracy}%`;
-                }
-              },
-            },
-          },
-        },
-        scales: {
-          r: {
-            angleLines: {
-              color: "#ccc",
-            },
-            grid: {
-              color: "#ddd",
-            },
-            ticks: {
-              stepSize: 10,
-              display: true,
-              color: "#000",
-            },
-          },
-        },
-      },
-    });
+    this.fetchData();
   },
 };
 </script>
@@ -245,6 +283,10 @@ export default {
 
 .score-box p {
   margin: 0;
+
+
+
+
 }
 
 .divider {
@@ -310,11 +352,13 @@ export default {
   color: black;
   text-decoration: none;
   font-size: 14px;
+
 }
 
 .highlight-link:hover {
   text-decoration: none;
 }
+
 
 /* 오른쪽 화살표 */
 .highlight-arrow {
@@ -342,6 +386,7 @@ export default {
   padding: 10px;
   margin-bottom: 8px;
   line-height: 20px;
+
 }
 
 .solution-label {
