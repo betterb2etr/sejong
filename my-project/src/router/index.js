@@ -3,8 +3,7 @@ import VueRouter from 'vue-router';
 import { appState } from '@/App.vue';
 
 import LoginView from '@/views/LoginView.vue';
-import HomeView from '@/views/HomeView.vue'; // 홈화면 추가
-import DashboardView from '@/views/DashboardView.vue';
+import HomeView from '@/views/HomeView.vue';
 import GradeInputView from '@/views/GradeInputView.vue';
 import GradeAnalysisView from '@/views/GradeAnalysisView.vue';
 import TimerView from '@/views/TimerView.vue';
@@ -22,7 +21,6 @@ const routes = [
   { path: '/home', name: 'Home', component: HomeView, meta: { requiresAuth: true } },
   { path: '/exam', name: 'Exam', component: ExamView, meta: { requiresAuth: true } },
   { path: '/exam-result', name: 'ExamResult', component: ExamResultView, meta: { requiresAuth: true } },
-  { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
   { path: '/grade-input', name: 'GradeInput', component: GradeInputView, meta: { requiresAuth: true } },
   { path: '/grade-analysis', name: 'GradeAnalysis', component: GradeAnalysisView, meta: { requiresAuth: true } },
   { path: '/timer', name: 'Timer', component: TimerView, meta: { requiresAuth: true } },
@@ -41,7 +39,7 @@ const router = new VueRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !appState.isLoggedIn) {
-    next('/');
+    next('/'); // 로그인 화면으로 이동
   } else {
     next();
   }

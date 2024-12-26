@@ -1,7 +1,6 @@
 <template>
   <nav>
     <ul>
-      <li><router-link to="/dashboard">Dashboard</router-link></li>
       <li><router-link to="/grade-input">점수 입력</router-link></li>
       <li><router-link to="/grade-analysis">점수 분석</router-link></li>
       <li><router-link to="/timer">Timer</router-link></li>
