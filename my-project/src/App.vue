@@ -1,17 +1,37 @@
 <template>
   <div id="app">
-    <router-view /> <!-- 라우터에서 현재 활성화된 컴포넌트를 렌더링 -->
+    <NavbarCPT v-if="isLoggedIn" @logout="handleLogout" />
+    <router-view />
   </div>
 </template>
 
 <script>
+import NavbarCPT from '@/components/NavbarCPT.vue';
+import { reactive } from 'vue';
+
+export const appState = reactive({
+  isLoggedIn: false,
+});
+
 export default {
   name: 'App',
+  components: {
+    NavbarCPT,
+  },
+  computed: {
+    isLoggedIn() {
+      return appState.isLoggedIn;
+    },
+  },
+  methods: {
+    handleLogout() {
+      appState.isLoggedIn = false;
+      this.$router.push('/');
+    },
+  },
 };
 </script>
 
 <style>
-#app {
-  text-align: center;
-}
+/* 글로벌 스타일 */
 </style>
