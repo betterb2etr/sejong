@@ -2,17 +2,22 @@
   <div class="home-view">
     <!-- 상단 환영 메시지 -->
     <div class="welcome-section">
-      <h1>어서오세요 {{ userName }}님</h1>
-      <p>오늘도 화이팅! 고득점 TOEIC 응원합니다!</p>
+      <div class="icon-container">
+        <div class="icon user-icon"></div>
+        <div class="text-container">
+          <h1>어서오세요 {{ userName }}님</h1>
+          <p>오늘도 화이팅! 고득점 TOEIC 응원합니다!</p>
+        </div>
+      </div>
     </div>
 
     <!-- 주요 버튼 영역 -->
-    <div class="button-grid">
-      <div class="grid-item" @click="goToStudyRoom">
+    <div class="button-column">
+      <div class="grid-item study-button" @click="goToStudyRoom">
         <div class="icon study-icon"></div>
         <p>학습하러 가기</p>
       </div>
-      <div class="grid-item" @click="goToTimer">
+      <div class="grid-item timer-button" @click="goToTimer">
         <div class="icon timer-icon"></div>
         <p>타이머</p>
       </div>
@@ -74,24 +79,44 @@ export default {
   margin-bottom: 20px;
 }
 
-.welcome-section h1 {
-  font-size: 18px;
+.icon-container {
+  display: flex;
+  align-items: center; /* 아이콘과 텍스트 수평 정렬 */
+  gap: 12px;
+}
+
+.user-icon {
+  width: 80px; /* 아이콘 크기 증가 */
+  height: 80px; /* 아이콘 높이 증가 */
+  background-image: url('@/assets/farmer.png'); /* 사용자 아이콘 */
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.text-container {
+  text-align: left;
+}
+
+.text-container h1 {
+  font-size: 20px;
+  font-weight: bold;
   color: #333;
 }
 
-.welcome-section p {
+.text-container p {
   font-size: 14px;
   color: #666;
+  margin: 0;
 }
 
-/* 버튼 그리드 */
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2등분 */
-  gap: 16px;
+/* 버튼 영역 */
+.button-column {
+  display: flex;
+  flex-direction: column; /* 위아래 정렬 */
+  gap: 24px; /* 버튼 간 간격 증가 */
   width: 100%;
   max-width: 320px; /* 모바일 화면 크기에 맞춤 */
-  justify-content: center; /* 중앙 정렬 */
+  margin-bottom: 5px; /* 학습 팁 섹션과 간격 추가 */
 }
 
 .grid-item {
@@ -99,55 +124,55 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  background-color: #ffffff;
-  border: 1px solid #d9d9d9;
+  padding: 16px;
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, transform 0.2s ease;
+  color: white;
+  font-weight: bold;
 }
 
 .grid-item:hover {
-  background-color: #e6f7ff;
   transform: translateY(-3px);
+}
+
+.study-button {
+  background-color: #a5d6a7; /* 연두색 */
+}
+
+.study-button:hover {
+  background-color: #81c784;
+}
+
+.timer-button {
+  background-color: #ffa726; /* 주황색 */
+}
+
+.timer-button:hover {
+  background-color: #fb8c00;
 }
 
 .grid-item p {
   margin-top: 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-  color: #333;
-}
-
-/* 아이콘 스타일 */
-.icon {
-  width: 36px;
-  height: 36px;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-.study-icon {
-  /* background-image: url('/assets/icons/study.png'); 학습 아이콘 */
-}
-
-.timer-icon {
-  /* background-image: url('/assets/icons/timer.png'); 타이머 아이콘 */
+  color: white;
 }
 
 /* 학습 팁 섹션 */
 .tips-section {
   width: 100%;
   max-width: 320px; /* 모바일 화면 크기에 맞춤 */
-  margin-top: 16px;
+  margin-top: 15px; /* 버튼 영역과 분리 */
+  margin-bottom: 15px;
 }
 
 .tips-section h2 {
   font-size: 16px;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 18px;
 }
 
 .tip-card {
@@ -168,25 +193,5 @@ export default {
 .tip-card p {
   font-size: 12px;
   color: #666;
-}
-
-/* 반응형 디자인 */
-@media screen and (max-width: 768px) {
-  .grid-item {
-    padding: 10px;
-  }
-
-  .icon {
-    width: 28px;
-    height: 28px;
-  }
-
-  .welcome-section h1 {
-    font-size: 16px;
-  }
-
-  .welcome-section p {
-    font-size: 12px;
-  }
 }
 </style>

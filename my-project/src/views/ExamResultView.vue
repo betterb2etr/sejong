@@ -1,292 +1,400 @@
 <template>
   <div class="analysis-page">
-    <!-- 학습 결과 입력 -->
-    <div class="input-section">
-      <h2>{{ userName }} 님, 학습 결과를 입력해주세요!</h2>
-      <button @click="goToInputPage" class="input-button">학습 결과 입력하기</button>
+    <!-- 헤더 -->
+    <div class="header">
+      <h3>AI 학습 결과 분석</h3>
     </div>
 
     <!-- 사용자 전체 점수 -->
     <div class="score-section">
-      <h3>사용자 전체 점수</h3>
-      <p class="total-score">총 {{ totalScore }}점</p>
-      <div class="score-details">
-        <div class="score-box">
-          <p>RC</p>
-          <p class="score">{{ rcScore }}점</p>
+      <div class="score-header">
+        <h4>성립 님의 점수</h4>
+        <div class="score-summary">
+          <p class="total-score">총 <span>{{ totalScore }}점</span></p>
         </div>
-        <div class="score-box">
-          <p>LC</p>
-          <p class="score">{{ lcScore }}점</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 사용자 전체 오답률 -->
-    <div class="wrong-rate-section">
-      <h3>사용자 전체 오답률</h3>
-      <div class="circle-container">
-        <svg class="progress-ring" width="120" height="120">
-          <circle
-            class="progress-ring__background"
-            cx="60"
-            cy="60"
-            r="50"
-            fill="transparent"
-          />
-          <circle
-            class="progress-ring__circle"
-            cx="60"
-            cy="60"
-            r="50"
-            fill="transparent"
-            stroke-dasharray="314"
-            :stroke-dashoffset="314 - (314 * wrongRate) / 100"
-          />
-        </svg>
-        <p class="circle-text">{{ wrongRate }}%</p>
-      </div>
-      <p class="encouragement">아직 괜찮아요, 조금 더 노력해봐요!</p>
-    </div>
-
-    <!-- Part 별 오답률 -->
-    <div class="part-analysis-section">
-      <h3>Part 별 오답률</h3>
-      <div class="part-grid">
-        <div class="part-card" v-for="(part, index) in parts" :key="index">
-          <h4>{{ part.name }}</h4>
-          <p>전체 이용자의 상위 {{ part.rank }}%에 해당합니다.</p>
-          <div class="progress-bar">
-            <div class="progress-fill" :style="{ width: part.accuracy + '%' }"></div>
+        <div class="score-details">
+          <div class="score-box">
+            <p>RC</p>
+            <p class="score">{{ rcScore }}점</p>
           </div>
-          <p class="accuracy">{{ part.accuracy }}%</p>
+          <div class="divider">|</div>
+          <div class="score-box">
+            <p>LC</p>
+            <p class="score">{{ lcScore }}점</p>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 전체 정답률 -->
+    <div class="accuracy-rate-section">
+      <p>전체 정답률: <span class="accuracy-rate">{{ totalAccuracyRate }}%</span></p>
+    </div>
+
+    <!-- 정답률 분석 -->
+    <div class="radar-chart-section">
+      <h3>정답률 분석</h3>
+      <canvas id="radarChart" width="300" height="300"></canvas>
+    </div>
+
+    <!-- 오답률 강조 박스 -->
+    <div class="highlight-box">
+      <div class="highlight-left">
+        <span class="highlight-icon">📄</span>
+        <div class="highlight-texts">
+          <div class="highlight-title">
+            part.5에서 오답률이 가장 높아요.
+          </div>
+          <a href="#" class="highlight-link">part.5 공부법 알아보기</a>
+        </div>
+      </div>
+      <div class="highlight-arrow">
+        ➜
       </div>
     </div>
 
     <!-- 학습 컨설팅 -->
     <div class="consulting-section">
       <h3>학습 컨설팅</h3>
-      <div class="solution" v-for="(solution, index) in solutions" :key="index">
-        <h4>Solution {{ index + 1 }}</h4>
-        <p>{{ solution }}</p>
+      <!-- Solution 1 -->
+      <div class="solution-box">
+        <h4>
+          <span class="solution-label">Solution. 1</span>
+        </h4>
+        <p>Part.1 유형은 시간을 빨리 쓰고 정답율이 높은 편입니다. 잘 하고 있어요! 다른 취약한 파트에 시간을 더 투자해보는게 좋을 것 같아요!</p>
       </div>
+      <!-- Solution 2 -->
+      <div class="solution-box">
+        <h4>
+          <span class="solution-label">Solution. 2</span>
+        </h4>
+        <p>Part.2의 소요시간은 13m 15s로 합격자의 평균 소요시간보다 오래 걸려요! 10분 내 풀이를 연습해보세요!</p>
+      </div>
+
+      <!-- 최종 점수 박스 -->
       <div class="final-score">
-        <p>해당 컨설팅 방법으로 공부 시</p>
-        <p class="predicted-score">{{ predictedScore }}점 예상</p>
+        <span class="final-score-icon">🎓</span>
+        <div class="final-score-texts">
+          <p class="final-score-title">해당 권장 공부법으로 공부 시</p>
+          <p class="predicted-score">
+            <span class="score">{{ predictedScore }}점</span>
+            <span class="small-text">예상</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Chart from "chart.js/auto";
+
 export default {
   name: "AnalysisPage",
   data() {
     return {
-      userName: "성림",
-      totalScore: 700,
+      totalScore: 735,
       rcScore: 350,
-      lcScore: 350,
-      wrongRate: 40,
-      parts: [
-        { name: "Part 1", rank: 12, accuracy: 80 },
-        { name: "Part 2", rank: 12, accuracy: 75 },
-        { name: "Part 3", rank: 12, accuracy: 90 },
-        { name: "Part 4", rank: 12, accuracy: 60 },
-        { name: "Part 5", rank: 12, accuracy: 85 },
-        { name: "Part 6", rank: 12, accuracy: 70 },
-        { name: "Part 7", rank: 12, accuracy: 65 },
-      ],
-      solutions: [
-        "파트 1의 풀이 시간을 줄이고 다른 파트에 시간을 더 투자해보세요!",
-        "파트 2의 정확도를 높이기 위해 20분 내 풀이 연습을 해보세요!",
-      ],
+      lcScore: 385,
+      totalAccuracyRate: 78,
       predictedScore: 810,
+      radarData: {
+        labels: ["PART 1", "PART 2", "PART 3", "PART 4", "PART 5", "PART 6", "PART 7"],
+        datasets: [
+          {
+            label: "토익 합격자 평균 정답률",
+            data: [88, 83, 85, 80, 84, 81, 86],
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1,
+          },
+          {
+            label: "사용자 평균 정답률",
+            // rank 배열(상위 퍼센트)
+            userRank: [25, 20, 30, 15, 18, 28, 22],
+            data: [78, 76, 80, 74, 79, 76, 81],
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 1,
+          },
+        ],
+      },
     };
   },
-  methods: {
-    goToInputPage() {
-      alert("학습 결과 입력 페이지로 이동합니다!");
-    },
+  mounted() {
+    const ctx = document.getElementById("radarChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "radar",
+      data: this.radarData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: {
+              font: {
+                size: 12,
+              },
+            },
+          },
+          // tooltip 콜백: "PART X: 76% (상위 25%)" 등 표시
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                // 해당 데이터셋
+                const dataset = context.dataset;
+                // PART 라벨 (PART 1, PART 2, ...)
+                const label = context.chart.data.labels[context.dataIndex];
+                // 사용자 정답률 값
+                const userAccuracy = dataset.data[context.dataIndex];
+                // 상위 퍼센트
+                // 만약 rank 데이터가 없으면(합격자 평균 정답률), undefined 처리
+                const rank = dataset.userRank 
+                  ? dataset.userRank[context.dataIndex] 
+                  : null;
+
+                if (rank !== null && rank !== undefined) {
+                  // 사용자 평균 정답률
+                  return `${label}: ${userAccuracy}% (상위 ${rank}%)`;
+                } else {
+                  // 토익 합격자 평균일 경우
+                  return `${label}: ${userAccuracy}%`;
+                }
+              },
+            },
+          },
+        },
+        scales: {
+          r: {
+            angleLines: {
+              color: "#ccc",
+            },
+            grid: {
+              color: "#ddd",
+            },
+            ticks: {
+              stepSize: 10,
+              display: true,
+              color: "#000",
+            },
+          },
+        },
+      },
+    });
   },
 };
 </script>
 
 <style scoped>
-/* 전체 페이지 스타일 */
 .analysis-page {
-  font-family: 'Arial', sans-serif;
-  padding: 20px;
+  font-family: "Arial", sans-serif;
   max-width: 500px;
   margin: 0 auto;
   color: #333;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 10px;
 }
 
-/* 학습 결과 입력 */
-.input-section {
+.header {
   text-align: center;
-  background-color: #ffe7ba;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-.input-button {
-  background-color: #ffa940;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.input-button:hover {
-  background-color: #d48806;
-}
-
-/* 점수 섹션 */
-.score-section {
-  text-align: center;
-  color: #1c201a;
-}
-
-.total-score {
-  font-size: 20px;
-  font-weight: bold;
-  color: #52c41a;
-}
-
-.score-details {
-  display: flex;
-  justify-content: space-between;
-  color: #70a5db;
-}
-
-.score-box {
-  color: #4f82db;
-  text-align: center;
-  flex: 1;
-}
-
-.score-box .score {
+.header h3 {
   font-size: 18px;
   font-weight: bold;
 }
 
-/* 사용자 전체 오답률 */
-.wrong-rate-section {
+.score-section {
   text-align: center;
-}
-
-.circle-container {
-  position: relative;
-  width: 120px;
-  height: 90px;
-  padding : 20px;
-  margin: 0 auto;
-  color : rgb(70, 172, 186);
-}
-
-.progress-ring {
-  transform: rotate(-90deg);
-}
-
-.progress-ring__background {
-  stroke: #e8e8e8;
-  stroke-width: 10;
-}
-
-.progress-ring__circle {
-  stroke: #FF830F;
-  stroke-width: 10;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s ease;
-}
-
-.circle-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-}
-
-.encouragement {
-  font-size: 14px;
-  color: #666;
-  margin-top: 10px;
-}
-
-/* Part 분석 섹션 */
-.part-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3등분 */
-  gap: 10px;
-}
-
-.part-card {
-  background-color: #fafafa;
-  border: 1px solid #d9d9d9;
+  background-color: #f6f6f6;
   border-radius: 10px;
-  padding: 10px;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.score-header {
+  font-size: 16px;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.score-summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.total-score span {
+  font-size: 22px;
+  font-weight: bold;
+  color: #52c41a;
+  padding: 5px 15px;
+  background-color: #e6ffed;
+  border-radius: 20px;
+}
+
+.score-details {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.score-box p {
+  margin: 0;
+}
+
+.divider {
+  font-size: 16px;
+  color: #ccc;
+}
+
+.accuracy-rate-section {
   text-align: center;
+  margin: 10px 0;
 }
 
-.progress-bar {
-  background-color: #e8e8e8;
-  border-radius: 5px;
-  height: 8px;
+.accuracy-rate {
+  font-size: 18px;
+  font-weight: bold;
+  color: #52c41a;
 }
 
-.progress-fill {
-  height: 8px;
-  background-color: #ffa940;
-  border-radius: 5px;
+.radar-chart-section {
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* ---- Part별 분석 섹션 삭제 ---- */
+
+/* 오답률 강조 박스 */
+.highlight-box {
+  background-color: #ff8000;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin: 20px 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.highlight-icon {
+  font-size: 30px;
+  margin-right: 10px;
+}
+
+.highlight-left {
+  display: flex;
+  align-items: flex-start;
+}
+
+.highlight-texts {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.highlight-title {
+  color: black;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.highlight-link {
+  color: black;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.highlight-link:hover {
+  text-decoration: none;
+}
+
+/* 오른쪽 화살표 */
+.highlight-arrow {
+  width: 30px;
+  height: 30px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  font-size: 14px;
 }
 
 /* 학습 컨설팅 */
 .consulting-section {
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.solution {
-  background-color: #f6ffed;
-  border: 1px solid #b7eb8f;
+.solution-box {
+  background-color: #fff;
+  border: 1px solid #e7f5dd;
   border-radius: 10px;
   padding: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  line-height: 20px;
 }
 
+.solution-label {
+  background-color: #d9f7be;
+  color: #22aa22;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 15px;
+  display: inline-block;
+  font-size: 13px;
+  margin-bottom: 1px;
+}
+
+/* 최종 점수 박스 */
 .final-score {
-  text-align: center;
-  background-color: #e6f7ff;
-  padding: 10px;
+  display: flex;
+  align-items: center;
+  background-color: #11e318;
   border-radius: 10px;
+  padding: 10px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.final-score-icon {
+  font-size: 32px;
+  margin-right: 12px;
+}
+
+.final-score-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.final-score-title {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  font-weight: normal;
 }
 
 .predicted-score {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.predicted-score .score {
   font-size: 20px;
   font-weight: bold;
-  color: #203c97;
+  margin-right: 5px;
 }
 
-/* 반응형: 화면 크기에 맞게 그리드 열 수 조정 */
-@media (max-width: 768px) {
-  .part-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2등분 */
-  }
-}
-
-@media (max-width: 500px) {
-  .part-grid {
-    grid-template-columns: 1fr; /* 1등분 */
-  }
+.predicted-score .small-text {
+  font-size: 14px;
+  font-weight: normal;
 }
 </style>

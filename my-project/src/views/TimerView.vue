@@ -1,14 +1,19 @@
 <template>
-  
-  
   <div class="timer-view">
     <h2>Timer</h2>
     <p>120분 화이팅입니다!</p>
-    <button  @click="goToPassion" class="passion-button">열품타</button>
-    <p>혹시 열정을 같이 품나요?</p>
-    
-    <TimerCPT :initialTime="7200" ref="timer"/>
-    <button v-if="!timerStarted" @click="startTimer" class="start-button">시작</button>
+    <button @click="goToPassion" class="passion-button">열품타</button>
+    <p class="info-text">혹시 열정을 같이 품나요?</p>
+
+    <TimerCPT :initialTime="7200" ref="timer" />
+
+    <!-- 버튼 그룹 -->
+    <div class="button-grid">
+      <button @click="startTimer" class="control-button">Start</button>
+      <button @click="pauseTimer" class="control-button">Pause</button>
+      <button @click="stopTimer" class="control-button">Stop</button>
+      <button @click="initTimer" class="control-button">Init</button>
+    </div>
   </div>
 </template>
 
@@ -28,10 +33,21 @@ export default {
   methods: {
     startTimer() {
       this.timerStarted = true;
-      this.$refs.timer.startTimer(); // 타이머 시작
+      this.$refs.timer.startTimer();
+    },
+    pauseTimer() {
+      this.$refs.timer.stopTimer();
+    },
+    stopTimer() {
+      this.$refs.timer.stopTimer();
+      this.timerStarted = false; // 타이머 상태 초기화
+    },
+    initTimer() {
+      this.$refs.timer.initTimer();
+      this.timerStarted = false; // 타이머 상태 초기화
     },
     goToPassion() {
-      this.$router.push('/exam');
+      this.$router.push("/passion");
     },
   },
 };
@@ -56,8 +72,15 @@ h2 {
 
 p {
   font-size: 18px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
+
+.info-text {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #666;
+}
+
 .passion-button {
   margin-top: 10px;
   padding: 15px 25px;
@@ -67,8 +90,19 @@ p {
   border: none;
   cursor: pointer;
 }
-.start-button {
+
+.passion-button:hover {
+  background-color: #e64a19;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2열로 정렬 */
+  gap: 10px; /* 버튼 간 간격 */
   margin-top: 20px;
+}
+
+.control-button {
   padding: 15px 25px;
   font-size: 18px;
   color: white;
@@ -76,10 +110,8 @@ p {
   border: none;
   cursor: pointer;
 }
-.passion-button:hover {
-  background-color: #45a049;
-}
-.start-button:hover {
+
+.control-button:hover {
   background-color: #45a049;
 }
 </style>
