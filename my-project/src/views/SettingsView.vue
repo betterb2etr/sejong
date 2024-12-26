@@ -2,8 +2,8 @@
   <div class="home-view">
     <div class="grid-page">
       <div class="grid-item grid-top">상단</div>
-      <div class="grid-item grid-middle">let's go examination</div>
-      <div class="grid-item grid-bottom">timer</div>
+      <div class="grid-item grid-middle"></div>
+      <div class="grid-item grid-bottom"></div>
     </div>
   </div>
 </template>

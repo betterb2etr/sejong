@@ -11,6 +11,7 @@ import RegisterBookView from '@/views/RegisterBookView.vue';
 import MyStudyRoomView from '@/views/MyStudyRoomView.vue';
 import ExamView from '@/views/ExamView.vue';
 import ExamResultView from '@/views/ExamResultView.vue';
+import PassionView from "@/views/PassionView.vue"; 
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,7 @@ const routes = [
   { path: '/settings', name: 'Settings', component: SettingsView, meta: { requiresAuth: true } },
   { path: '/register-book', name: 'RegisterBook', component: RegisterBookView, meta: { requiresAuth: true } },
   { path: '/my-study-room', name: 'MyStudyRoom', component: MyStudyRoomView, meta: { requiresAuth: true } },
+  { path: "/passion", name: "Passion", component: PassionView, meta: { requiresAuth: true }  }, // 새로운 경로 추가
 ];
 
 const router = new VueRouter({

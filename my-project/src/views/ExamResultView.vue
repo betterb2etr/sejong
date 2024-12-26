@@ -87,38 +87,48 @@
 </template>
 
 <script>
+
 import axios from 'axios';
+
 import Chart from "chart.js/auto";
 
 export default {
   name: "AnalysisPage",
   data() {
     return {
-      totalScore: 0,
-      rcScore: 0,
-      lcScore: 0,
-      totalAccuracyRate: 0,
-      predictedScore: 0,
+
+      totalScore: 735,
+      rcScore: 350,
+      lcScore: 385,
+      totalAccuracyRate: 78,
+      predictedScore: 810,
+
       radarData: {
         labels: ["PART 1", "PART 2", "PART 3", "PART 4", "PART 5", "PART 6", "PART 7"],
         datasets: [
           {
             label: "토익 합격자 평균 정답률",
-            data: [],
+
+            data: [88, 83, 85, 80, 84, 81, 86],
+
             backgroundColor: "rgba(54, 162, 235, 0.2)",
             borderColor: "rgba(54, 162, 235, 1)",
             borderWidth: 1,
           },
           {
             label: "사용자 평균 정답률",
-            userRank: [],
-            data: [],
+
+            // rank 배열(상위 퍼센트)
+            userRank: [25, 20, 30, 15, 18, 28, 22],
+            data: [78, 76, 80, 74, 79, 76, 81],
+
             backgroundColor: "rgba(255, 99, 132, 0.2)",
             borderColor: "rgba(255, 99, 132, 1)",
             borderWidth: 1,
           },
         ],
       },
+
       chartInstance: null,
     };
   },
@@ -206,6 +216,7 @@ export default {
         },
       });
     },
+
   },
   mounted() {
     this.fetchData();
@@ -272,6 +283,10 @@ export default {
 
 .score-box p {
   margin: 0;
+
+
+
+
 }
 
 .divider {
@@ -337,11 +352,13 @@ export default {
   color: black;
   text-decoration: none;
   font-size: 14px;
+
 }
 
 .highlight-link:hover {
   text-decoration: none;
 }
+
 
 /* 오른쪽 화살표 */
 .highlight-arrow {
@@ -369,6 +386,7 @@ export default {
   padding: 10px;
   margin-bottom: 8px;
   line-height: 20px;
+
 }
 
 .solution-label {

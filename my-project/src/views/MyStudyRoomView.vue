@@ -1,7 +1,7 @@
 <template>
     <div class="my-study-room">
-      <h2>나의 학습장</h2>
-      <button @click="goHome" class="home-button">HOME</button>
+      <h2>나의 학습실</h2>
+    
       <ul v-if="books.length">
         <li v-for="(book, index) in books" :key="index">교재 ISBN: {{ book }}</li>
       </ul>
@@ -39,19 +39,6 @@
     margin-top: 20px;
   }
   
-  .home-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #2196f3;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .home-button:hover {
-    background-color: #1976d2;
-  }
-
   .exam-button {
   padding: 15px 30px;
   font-size: 38px;
