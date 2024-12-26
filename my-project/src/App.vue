@@ -1,31 +1,17 @@
 <template>
   <div id="app">
-    <div class="main-container">
-      <h1>Welcome to My Application</h1>
-      <MainButton />
-    </div>
+    <router-view /> <!-- 라우터에서 현재 활성화된 컴포넌트를 렌더링 -->
   </div>
 </template>
 
 <script>
-import MainButton from './components/MainButton.vue';
-
 export default {
   name: 'App',
-  components: {
-    MainButton, // "입장하기" 버튼 컴포넌트
-  },
 };
 </script>
 
 <style>
-.main-container {
+#app {
   text-align: center;
-  margin-top: 50px;
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
 }
 </style>
