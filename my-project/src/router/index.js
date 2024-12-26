@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import LoginView from '@/views/LoginView.vue'; // 새로 생성된 로그인 화면
-import ListPage from '@/components/ListPage.vue'; // 기존 기능 열거 페이지
+import LoginView from '@/views/LoginView.vue';
+import ListPage from '@/components/ListPage.vue';
 
 Vue.use(VueRouter);
 
@@ -9,12 +9,27 @@ const routes = [
   {
     path: '/',
     name: 'Login',
-    component: LoginView, // 기본 경로를 로그인 화면으로 설정
+    component: LoginView,
   },
   {
     path: '/list',
     name: 'List',
-    component: ListPage, // 기능 열거 페이지
+    component: ListPage,
+  },
+  {
+    path: '/create-project',
+    name: 'CreateProject',
+    component: () => import('@/views/CreateProject.vue'),
+  },
+  {
+    path: '/open-project',
+    name: 'OpenProject',
+    component: () => import('@/views/OpenProject.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('@/views/Settings.vue'), // Settings 컴포넌트를 가리키지만, 내부적으로 이름은 SettingsPage로 변경됨
   },
 ];
 

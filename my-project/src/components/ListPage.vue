@@ -2,9 +2,9 @@
   <div class="list-container">
     <h2>사용자 작업 리스트</h2>
     <ul>
-      <li v-for="(item, index) in tasks" :key="index">
-        <a :href="item.link" target="_blank">{{ item.name }}</a>
-      </li>
+     <li v-for="(item, index) in tasks" :key="index">
+        <router-link :to="item.link">{{ item.name }}</router-link>
+     </li>
     </ul>
   </div>
 </template>
@@ -15,10 +15,11 @@ export default {
   data() {
     return {
       tasks: [
-        { name: '작업 1: 새 프로젝트 생성', link: '#' },
-        { name: '작업 2: 기존 프로젝트 열기', link: '#' },
-        { name: '작업 3: 환경 설정', link: '#' },
+        { name: '작업 1: 새 프로젝트 생성', link: '/create-project' },
+        { name: '작업 2: 기존 프로젝트 열기', link: '/open-project' },
+        { name: '작업 3: 환경 설정', link: '/settings' },
       ],
+
     };
   },
 };
