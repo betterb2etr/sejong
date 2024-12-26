@@ -11,6 +11,7 @@ import { reactive } from 'vue';
 
 export const appState = reactive({
   isLoggedIn: false,
+  registeredBooks: [], // 등록된 교재 목록
 });
 
 export default {
@@ -26,6 +27,7 @@ export default {
   methods: {
     handleLogout() {
       appState.isLoggedIn = false;
+      appState.registeredBooks = [];
       this.$router.push('/');
     },
   },

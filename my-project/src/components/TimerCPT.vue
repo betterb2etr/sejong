@@ -1,45 +1,18 @@
-<template>
-    <div class="timer">
-      <h2>Timer</h2>
-      <p>{{ timeLeft }} seconds left</p>
-      <button @click="startTimer">Start</button>
-      <button @click="resetTimer">Reset</button>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'TimerCPT',
-    data() {
-      return {
-        timeLeft: 60,
-        timer: null,
-      };
+<script>
+export default {
+  methods: {
+    startTimer() {
+      if (this.timer) return;
+      this.timer = setInterval(() => {
+        if (this.timeLeft > 0) {
+          this.timeLeft--;
+        } else {
+          clearInterval(this.timer);
+          this.timer = null;
+          this.$router.push('/exam-result'); // 시간 만료 시 결과창으로 이동
+        }
+      }, 1000);
     },
-    methods: {
-      startTimer() {
-        if (this.timer) return;
-        this.timer = setInterval(() => {
-          if (this.timeLeft > 0) {
-            this.timeLeft--;
-          } else {
-            clearInterval(this.timer);
-            this.timer = null;
-          }
-        }, 1000);
-      },
-      resetTimer() {
-        clearInterval(this.timer);
-        this.timer = null;
-        this.timeLeft = 60;
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .timer {
-    text-align: center;
-  }
-  </style>
-  
+  },
+};
+</script>
