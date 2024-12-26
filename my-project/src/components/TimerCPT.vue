@@ -1,7 +1,14 @@
 <template>
-  <div class="timer">
-    <p v-if="!timeExpired">남은 시간: {{ formattedTime }}</p>
-    <p v-else class="expired">시간이 만료되었습니다!</p>
+  <div class="flip-timer">
+    <div class="flip-box">
+      <span class="flip-number">{{ minutes }}</span>
+      <span class="flip-label">분</span>
+    </div>
+    <div class="flip-box">
+      <span class="flip-number">{{ seconds }}</span>
+      <span class="flip-label">초</span>
+    </div>
+    <p v-if="timeExpired" class="expired">시간이 만료되었습니다!</p>
   </div>
 </template>
 
@@ -22,10 +29,11 @@ export default {
     };
   },
   computed: {
-    formattedTime() {
-      const minutes = Math.floor(this.timeLeft / 60);
-      const seconds = this.timeLeft % 60;
-      return `${minutes}분 ${seconds}초`;
+    minutes() {
+      return Math.floor(this.timeLeft / 60);
+    },
+    seconds() {
+      return this.timeLeft % 60;
     },
   },
   methods: {
@@ -53,13 +61,41 @@ export default {
 </script>
 
 <style scoped>
-.timer {
-  font-size: 18px;
+.flip-timer {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.flip-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 120px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.flip-number {
+  font-size: 56px;
+  font-weight: bold;
   color: #333;
+}
+
+.flip-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #666;
+  margin-top: 10px;
 }
 
 .expired {
   color: red;
   font-weight: bold;
+  margin-top: 20px;
 }
 </style>

@@ -1,8 +1,9 @@
 <template>
   <div class="home-view">
-    <h1>홈 화면</h1>
-    <p>환영합니다! TOEIC 응시를 준비하세요.</p>
-    <button @click="goToExam" class="exam-button">응시하러가기</button>
+    <h1>어서오세요 admin님</h1>
+    <p>오늘도 화이팅! 고득점 TOEIC 응원합니다!  </p>
+    <button @click="goToExam" class="exam-button">학습하러가기</button>
+ 
   </div>
 </template>
 
@@ -11,7 +12,7 @@ export default {
   name: 'HomeView',
   methods: {
     goToExam() {
-      this.$router.push('/exam');
+      this.$router.push('/my-study-room');
     },
   },
 };
@@ -25,7 +26,7 @@ export default {
 
 .exam-button {
   padding: 15px 30px;
-  font-size: 18px;
+  font-size: 38px;
   background-color: #4caf50;
   color: white;
   border: none;

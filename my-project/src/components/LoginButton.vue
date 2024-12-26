@@ -46,7 +46,7 @@ export default {
 
       if (this.username === validUsername && this.password === validPassword) {
         appState.isLoggedIn = true;
-        this.$router.push('/dashboard');
+        this.$router.push('/home'); // 홈화면으로 이동
       } else {
         this.errorMessage = 'Invalid username or password.';
       }
