@@ -1,4 +1,6 @@
 <template>
+  
+  
   <div class="timer-view">
     <h2>Timer</h2>
     <p>120분 화이팅입니다!</p>
