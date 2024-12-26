@@ -84,7 +84,7 @@ export default {
   name: "AnalysisPage",
   data() {
     return {
-      userName: "성립",
+      userName: "성림",
       totalScore: 700,
       rcScore: 350,
       lcScore: 350,
@@ -121,6 +121,9 @@ export default {
   max-width: 500px;
   margin: 0 auto;
   color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* 학습 결과 입력 */
@@ -149,7 +152,7 @@ export default {
 /* 점수 섹션 */
 .score-section {
   text-align: center;
-  margin-bottom: 20px;
+  color: #1c201a;
 }
 
 .total-score {
@@ -160,12 +163,14 @@ export default {
 
 .score-details {
   display: flex;
-  justify-content: space-around;
-  margin-top: 10px;
+  justify-content: space-between;
+  color: #70a5db;
 }
 
 .score-box {
+  color: #4f82db;
   text-align: center;
+  flex: 1;
 }
 
 .score-box .score {
@@ -176,31 +181,31 @@ export default {
 /* 사용자 전체 오답률 */
 .wrong-rate-section {
   text-align: center;
-  margin-bottom: 20px;
 }
 
 .circle-container {
   position: relative;
   width: 120px;
-  height: 120px;
+  height: 90px;
+  padding : 20px;
   margin: 0 auto;
+  color : rgb(70, 172, 186);
 }
 
 .progress-ring {
-  transform: rotate(-90deg); /* 원형 진행을 위에서 시작하도록 회전 */
+  transform: rotate(-90deg);
 }
 
 .progress-ring__background {
-  stroke: #e8e8e8; /* 배경색 */
+  stroke: #e8e8e8;
   stroke-width: 10;
 }
 
 .progress-ring__circle {
-  stroke: #FF830F; /* 주황색 */
+  stroke: #FF830F;
   stroke-width: 10;
-  stroke-linecap: round; /* 끝을 둥글게 */
-  transform-origin: center;
-  transition: stroke-dashoffset 0.6s ease; /* 애니메이션 효과 */
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
 }
 
 .circle-text {
@@ -211,7 +216,6 @@ export default {
   font-size: 24px;
   font-weight: bold;
   color: #333;
-  line-height: 1; /* 정확한 중앙 배치 */
 }
 
 .encouragement {
@@ -223,7 +227,7 @@ export default {
 /* Part 분석 섹션 */
 .part-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* 3등분 */
   gap: 10px;
 }
 
@@ -239,7 +243,6 @@ export default {
   background-color: #e8e8e8;
   border-radius: 5px;
   height: 8px;
-  position: relative;
 }
 
 .progress-fill {
@@ -271,6 +274,19 @@ export default {
 .predicted-score {
   font-size: 20px;
   font-weight: bold;
-  color: #52c41a;
+  color: #203c97;
+}
+
+/* 반응형: 화면 크기에 맞게 그리드 열 수 조정 */
+@media (max-width: 768px) {
+  .part-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2등분 */
+  }
+}
+
+@media (max-width: 500px) {
+  .part-grid {
+    grid-template-columns: 1fr; /* 1등분 */
+  }
 }
 </style>
